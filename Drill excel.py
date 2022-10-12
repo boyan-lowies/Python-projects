@@ -77,18 +77,17 @@ itemc=[]
 itemc_row=[]
 
 N=2
-adress= "D2"  
+adress= "B2"  
 
 
-while sheetTP[adress].value is not None:
-    if sheetTP["A" + str(N)].value == None:
-        items.append(sheetTP["D" + str(N)].value)
-        x=len(items)-1
-        itemid.append(sheetD["A" + str(search_value_in_column(sheetD,items[x],"B"))].value)
-        itemc_row.append(search_value_in_column(sheetD,str(itemid[x]),"AC"))
-        itemc.append(sheetD["AB" + str(itemc_row[x])].value)
+while sheetN[adress].value is not None:
+    items.append(sheetN["B" + str(N)].value)
+    x=len(items)-1
+    itemid.append(sheetD["A" + str(search_value_in_column(sheetD,items[x],"B"))].value)
+    itemc_row.append(search_value_in_column(sheetD,str(itemid[x]),"AC"))
+    itemc.append(sheetD["AB" + str(itemc_row[x])].value)
     N += 1
-    adress= "D" + str(N)  
+    adress= "B" + str(N)  
 
 
 buy_id = []
@@ -103,9 +102,13 @@ while sheetN[adress].value is not None:
 
 buy_id= buy_id + statics
 
-print(len(itemid), len(itemc_row))
-
 list_1 = drill_list(itemc_row, buy_id)
+print(list_1)
 list_2 = drill_list(list_1[2], buy_id)
+print(list_2)
 list_3 = drill_list(list_2[2], buy_id)
+print(list_3)
 list_4 = drill_list(list_3[2], buy_id)
+print(list_4)
+list_5 = drill_list(list_4[2], buy_id)
+print(list_5)
