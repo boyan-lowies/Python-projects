@@ -1,4 +1,5 @@
 
+from matplotlib.pyplot import pause
 import openpyxl as op
 
 wb = op.load_workbook('C:\\Users\\lowie\\Desktop\\pytest.xlsx', data_only=True)
@@ -6,7 +7,7 @@ sheetTP = wb['TP current']
 sheetD = wb['Data']
 sheetN = wb['Next']
 
-statics = "77256, 19790"
+statics = [77256, 19790, 76839]
 
 
 
@@ -37,7 +38,6 @@ def drill_list(row, buy):
     item_b = []
     count_b = []
 
-    i = 0 
     for x in range(0, len(row)):
         adress = sub_items[0] + str(row[x])
         z=0   
@@ -52,24 +52,13 @@ def drill_list(row, buy):
             z += 1
             adress = sub_items[z] + str(row[x])
 
-    print("----------------------------")
-    print(item, len(item))
-    print(count, len(count))
-    print(idrow, len(idrow))
-
     for x in item:
         if x not in buy:
             index = item.index(x)
             idrow.append(search_value_in_column(sheetD,str(x),"AC"))
             item_b.append(item[index])
             count_b.append(count[index])
-            
-    
-    print("----------")
-    print(item_b, len(item_b))
-    print(count_b, len(count_b))
-    print(idrow, len(idrow))   
-    
+
     return item_b, count_b, idrow
 
 
@@ -112,10 +101,11 @@ while sheetN[adress].value is not None:
     N += 1
     adress = "O" + str(N)
 
-buy_id.append(statics)
+buy_id= buy_id + statics
 
 print(len(itemid), len(itemc_row))
 
 list_1 = drill_list(itemc_row, buy_id)
 list_2 = drill_list(list_1[2], buy_id)
 list_3 = drill_list(list_2[2], buy_id)
+list_4 = drill_list(list_3[2], buy_id)
