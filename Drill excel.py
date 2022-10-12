@@ -30,12 +30,15 @@ sub_items = ["AF","AH","AJ","AL","AN"]
 sub_count = ["AG","AI","AK","AM"]
 
 
-def drill_list(id, row, buy):
+def drill_list(row, buy):
     item = []
     idrow = []
     count = []
+    item_b = []
+    count_b = []
+
+    i = 0 
     for x in range(0, len(row)):
-#        print(x,row[x])
         adress = sub_items[0] + str(row[x])
         z=0   
         while sheetD[adress].value != None:
@@ -49,19 +52,28 @@ def drill_list(id, row, buy):
             z += 1
             adress = sub_items[z] + str(row[x])
 
+    print("----------------------------")
+    print(item, len(item))
+    print(count, len(count))
+    print(idrow, len(idrow))
+
     for x in item:
-        if x in buy:
+        if x not in buy:
             index = item.index(x)
-            del item[index]
-            del count[index]
-        else:
             idrow.append(search_value_in_column(sheetD,str(x),"AC"))
-          
-
-    return item, count, idrow
-
-
+            item_b.append(item[index])
+            count_b.append(count[index])
+            
     
+    print("----------")
+    print(item_b, len(item_b))
+    print(count_b, len(count_b))
+    print(idrow, len(idrow))   
+    
+    return item_b, count_b, idrow
+
+
+     
 
 
 #------------------------#
@@ -104,6 +116,6 @@ buy_id.append(statics)
 
 print(len(itemid), len(itemc_row))
 
-list_1 = drill_list(itemid,itemc_row, buy_id)
-print(list_1[2], len(list_1[2]))
-list_2 = drill_list(list_1[0], list_1[2], buy_id)
+list_1 = drill_list(itemc_row, buy_id)
+list_2 = drill_list(list_1[2], buy_id)
+list_3 = drill_list(list_2[2], buy_id)
