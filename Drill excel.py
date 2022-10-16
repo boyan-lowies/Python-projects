@@ -62,9 +62,6 @@ def drill_list(row, buy):
     return item_b, count_b, idrow
 
 
-     
-
-
 #------------------------#
 #         Main           #
 #------------------------#
@@ -94,8 +91,7 @@ buy_id = []
 N=2
 adress = "O2"
 
-while sheetN[adress].value is not None:
-    
+while sheetN[adress].value is not None: 
     buy_id.append(sheetN[adress].value)
     N += 1
     adress = "O" + str(N)

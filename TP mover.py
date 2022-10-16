@@ -1,9 +1,9 @@
 
+from cgi import print_directory
 from PIL import ImageGrab
 import random
 import cv2 as cv
 import numpy as np
-from xmlrpc.client import boolean
 import openpyxl as op
 import pyautogui as gui
 import time
@@ -39,8 +39,10 @@ def move_png(img, offsetx, offsety, randofset):
     gui.click(location[0] ,location[1]) 
 
 
-def move_cords(location, offsetx, offsety, randofset):
-    location = [location[0]+ random.randint(0+randofset,location[2]-randofset-location[0]) + offsetx, location[1] + random.randint(0+randofset,location[3] - randofset-location[1]) + offsety]
+def move_cords(location, offsetx, offsety, randofset):      #Takes zero ofset 2 point coordinats
+    location = [location[0] + zeropoint[0],location[1] + zeropoint[1], location[2] - location[0], location[3] - location[1]]
+    print(location)
+    location = [location[0]+ random.randint(0+randofset,location[2]-randofset) + offsetx, location[1] + random.randint(0+randofset,location[3] - randofset) + offsety]
     gui.moveTo(location[0], location[1], 1, gui.easeInOutQuad) 
     gui.click(location[0] ,location[1]) 
 
@@ -50,7 +52,7 @@ def find_pos(count):
     result = pytesseract.image_to_string(img)
     result = result[:-1].replace("\n", " ") 
     if item_list[count] == result:
-        return search
+        return First_ofset
     return
 
 def find_price():
@@ -94,27 +96,29 @@ while 1:
 gui.click(location_TPB[0] + random.randint(0,location_TPB[2]) ,location_TPB[1]+ random.randint(0,location_TPB[3]))
 time.sleep(0.5)
 
-move_png('tp.png', 0, 46,5)
-
+move_png('C:\\Users\\lowie\\tp.png', 0, 46,5)
 time.sleep(2.0)
 
-zeropoint = gui.locateOnScreen('search.png', confidence=0.9)
-move_png('search.png',0,-1, 5)
+zeropoint = gui.locateOnScreen('C:\\Users\\lowie\\search.png', confidence=0.8)
+print("Zeropoint", zeropoint)
+
+move_png('C:\\Users\\lowie\\search.png',0,-1, 5)
 time.sleep(1.0)
 
 N = 1
 item_list[N] = "Lorekeeper Axe Skin"
-
 gui.write(item_list[N], interval=0.1)
+
 
 time.sleep(1.0)
 
 cords = find_pos(N)
+print(cords)
 move_cords(cords,0,0,5)
 
 time.sleep(2)
 
 price = find_price()
-print(price)
+
 
 
