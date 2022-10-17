@@ -23,6 +23,10 @@ def search_value_in_column(ws, search_string, column):
             return row
     return
 
+def user_input(id):
+   print("Item id", id, "not found, print name here:")
+   name = input()
+   return name
 #------------------------#
 #      Drill list        #
 #------------------------#
@@ -35,6 +39,7 @@ def drill_list(row, buy):
     item = []
     idrow = []
     count = []
+    name = []
     item_b = []
     count_b = []
 
@@ -58,8 +63,14 @@ def drill_list(row, buy):
             idrow.append(search_value_in_column(sheetD,str(x),"AC"))
             item_b.append(item[index])
             count_b.append(count[index])
+            try:
+                name.append(sheetD["B"+str(search_value_in_column(sheetD,x,"A"))].value)
+            except:
+                name.append(user_input(x))
+            print(name)
 
-    return item_b, count_b, idrow
+
+    return item_b, count_b, idrow, name
 
 
 #------------------------#
