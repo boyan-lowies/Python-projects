@@ -1,6 +1,4 @@
-import pyautogui as gui
-import time
+list = ['a', 'b', 'c']
 
-time.sleep(2)
-gui.press('home')
-gui.write("test")
+for x in range list:
+    print(x)
