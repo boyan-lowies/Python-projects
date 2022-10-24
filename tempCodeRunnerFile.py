@@ -1,1 +1,2 @@
-:\\Users\\lowie\\Desktop\\pytest.xlsx
+
+            adress = sub_items[z] + str(row[x])

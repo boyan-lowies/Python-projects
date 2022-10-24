@@ -1,4 +1,4 @@
-from dis import dis
+
 import openpyxl as op
 import pytesseract
 from pytesseract import Output
@@ -9,6 +9,7 @@ import time
 from PIL import ImageGrab
 from difflib import SequenceMatcher
 import ctypes
+import requests
 
 wb = op.load_workbook('C:\\Users\\lowie\\OneDrive\\Guild Wars 2.xlsx', data_only=True)
 sheetTP = wb['TP current']
@@ -22,9 +23,10 @@ Itembox = [67, -181, 367, 591]
 Countbox = [589,392,598,403]
 Craftbox = [627,384,767,406]
 pixelsearch = [939, 390, 949, 400]
-statics = [77256, 19790, 76839]
+statics = [77256, 19790, 76839, 46747]
 
-disiplin = ['Huntsman', 'Weaponsmith','Artificer','Armorsmith', 'Leatherworker', 'Tailor']
+disiplin = ['Armorsmith', 'Leatherworker', 'Tailor']
+# 'Huntsman', 'Weaponsmith','Artificer'
 
 #------------------------#
 #      Subroutines       #
@@ -78,13 +80,14 @@ def wait_done():
 sub_items = ["AF","AH","AJ","AL","AN"]
 sub_count = ["AG","AI","AK","AM"]
 
-def drill_list(row, buy):
+def drill_list(row, buy, amount, itemc_count):
     item = []
     idrow = []
     count = []
     name = []
     item_b = []
     count_b = []
+    item_craftcount = []
 
     for x in range(0, len(row)):
         adress = sub_items[0] + str(row[x])
@@ -93,27 +96,32 @@ def drill_list(row, buy):
             y = sheetD[adress].value
             if y not in item:               
                 item.append(y) 
-                count.append(sheetD[sub_count[z] + str(row[x])].value)
+                count.append((sheetD[sub_count[z] + str(row[x])].value)*amount[x]*(1/itemc_count[x]))
             else:
                 index = item.index(y)
-                count[index] = count[index] + sheetD[sub_count[z] + str(row[x])].value
+                count[index] +=  (sheetD[sub_count[z] + str(row[x])].value)*amount[x]*(1/itemc_count[x])
             z += 1
             adress = sub_items[z] + str(row[x])
 
     for x in item:
         if x not in buy:
             index = item.index(x)
-            idrow.append(search_value_in_column(sheetD,str(x),"AC"))
+            temp = search_value_in_column(sheetD,x,"AC")
+            idrow.append(temp)
             item_b.append(item[index])
             count_b.append(count[index])
+            item_craftcount.append(sheetD['AD' + str(temp)].value)
             try:
                 name.append(sheetD["B"+str(search_value_in_column(sheetD,x,"A"))].value)
             except:
-                name.append(user_input(x))
+                req = "https://api.guildwars2.com/v2/items/" + str(x)
+                result = requests.get(req)
+                result = result.json()
+                name.append(result['name'])
            
 
 
-    return item_b, count_b, idrow, name
+    return item_b, count_b, idrow, name, item_craftcount
 
 
 #------------------------#
@@ -179,6 +187,7 @@ items_b=[]
 itemid_b=[]
 itemc_b=[]
 itemc_row_b=[]
+itemc_count_b=[]
 
 N=2
 adress= "B2" 
@@ -188,17 +197,21 @@ while sheetN[adress].value is not None:
     x=len(items_b)-1
     itemid_b.append(sheetD["A" + str(search_value_in_column(sheetD,items_b[x],"B"))].value)
     itemc_row_b.append(search_value_in_column(sheetD,itemid_b[x],"AC"))
-    print(items_b[x], itemid_b[x], itemc_row_b[x])
     itemc_b.append(sheetD["AB" + str(itemc_row_b[x])].value)
+    itemc_count_b.append(sheetD["AD" + str(itemc_row_b[x])].value)
+
     N += 1
     adress= "B" + str(N)  
 
+print(itemc_b)
 
 for q in disiplin:
 
     items=[]
     itemid=[]
     itemc=[]
+    itemc_count = []
+    item_count=[]
     itemc_row=[]
     list = []
     z = 0
@@ -210,16 +223,15 @@ for q in disiplin:
         items.append(items_b[y])
         itemid.append(itemid_b[y])
         itemc.append(itemc_b[y])
+        item_count.append(1)
         itemc_row.append(itemc_row_b[y])
+        itemc_count.append(itemc_count_b[y])
 
-    list.append(drill_list(itemc_row, buy_id))
-    print(list)
+    list.append(drill_list(itemc_row, buy_id, item_count, itemc_count))
 
     while len(list[z][0]) != 0:
-        print(list[z][2])
-        list.append(drill_list(list[z][2], buy_id))
+        list.append(drill_list(list[z][2], buy_id, list[z][1], list[z][4]))
         z += 1
-        print(list[z], len(list[z]))
     
     zeropoint = gui.locateOnScreen('C:\\Users\\lowie\\wardrobe.jpg', confidence=0.9)
     print(zeropoint)
